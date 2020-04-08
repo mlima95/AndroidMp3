@@ -3,11 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="?attr/actionBarSize"
     android:background="@color/colorPrimary"
     android:navigationIcon="@drawable/menu_icon"
     android:theme="@style/ThemeOverlay.AppCompat.Dark"
-    app:navigationIcon="@drawable/menu_icon"
     app:title="AbhiAndroid"
     app:titleTextColor="#FFF">
     <!-- navigation button and title for the Toolbar-->
