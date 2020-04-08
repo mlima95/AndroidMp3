@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group android:checkableBehavior="none">
+        <!--
+                Add menu items here
+                Menu items with icon and Title
+        -->
+        <item
+            android:id="@+id/first"
+            android:icon="@mipmap/ic_launcher"
+            android:title="Téléchargement"
+            app:showAsAction="never"/>
+        <item
+            android:id="@+id/second"
+            android:icon="@mipmap/ic_launcher"
+            android:title="Player"
+            app:showAsAction="never"/>
+        <item
+            android:id="@+id/third"
+            android:icon="@mipmap/ic_launcher"
+            android:title="Playlist"
+            app:showAsAction="never"/>
+    </group>
+</menu>
