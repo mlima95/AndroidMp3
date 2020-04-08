@@ -19,7 +19,8 @@ android:background="@android:color/transparent">
     android:layout_toLeftOf="@+id/textViewDuration"
     android:layout_toStartOf="@+id/textViewDuration"
     android:layout_marginRight="16dp"
-    android:layout_marginEnd="16dp"/>
+    android:layout_marginEnd="16dp"
+    android:textColor="@color/ColorWhite"/>
 
 <TextView
     android:id="@+id/textViewArtiste"
@@ -37,7 +38,8 @@ android:background="@android:color/transparent">
     android:layout_toLeftOf="@+id/textViewDuration"
     android:layout_toStartOf="@+id/textViewDuration"
     android:layout_marginRight="16dp"
-    android:layout_marginEnd="16dp"/>
+    android:layout_marginEnd="16dp"
+    android:textColor="@color/ColorWhite"/>
 
 <TextView
     android:id="@+id/textViewDuration"
@@ -49,6 +51,7 @@ android:background="@android:color/transparent">
     android:layout_marginRight="16dp"
     android:layout_marginEnd="16dp"
     android:text="0:00"
-    android:textSize="12sp"/>
+    android:textSize="12sp"
+    android:textColor="@color/ColorWhite"/>
 
 </RelativeLayout>
