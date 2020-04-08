@@ -10,6 +10,8 @@ import android.widget.TextView;
 import com.example.androidmp3.R;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class MusicAdapter extends BaseAdapter {
 
@@ -55,7 +57,12 @@ public class MusicAdapter extends BaseAdapter {
         textTitre.setText(musics.get(position).getTitre());
         TextView textDuration =(TextView) rowView.findViewById(R.id.textViewDuration);
         int duration = musics.get(position).getDuration();
-        String finalduration = (duration > 60) ? String.valueOf(duration / 60).concat(":"+String.valueOf(duration % 60)) : "00:"+String.valueOf(duration);
+        String finalduration = String.format(
+                Locale.FRANCE, "%02d:%02d",
+                TimeUnit.MILLISECONDS.toMinutes(duration),
+                TimeUnit.MILLISECONDS.toSeconds(duration) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration))
+        );
+
         textDuration.setText(finalduration);
         return rowView;
     }

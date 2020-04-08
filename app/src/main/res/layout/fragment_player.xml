@@ -11,25 +11,23 @@
         android:layout_width="match_parent"
         android:layout_height="495dp"
         android:orientation="vertical">
-
-
-
         <TextView
-            android:id="@+id/textViewTitre"
+            android:id="@+id/textViewAlbum"
             android:layout_width="match_parent"
             android:layout_height="32dp"
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
             android:textSize="14sp"
-            android:gravity="bottom"
-            android:text="Titre"
+            android:gravity="center"
+            android:text="Album"
             android:maxLines="1"
             android:textColor="@color/colorText"
             android:ellipsize="end"
             android:layout_toLeftOf="@+id/textViewDuration"
             android:layout_toStartOf="@+id/textViewDuration"
             android:layout_marginRight="16dp"
-            android:layout_marginEnd="16dp"/>
+            android:layout_marginEnd="16dp"
+            android:textColor="@color/ColorWhite"/>
 
         <TextView
             android:id="@+id/textViewArtiste"
@@ -41,14 +39,15 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="2dp"
             android:textSize="12sp"
-            android:gravity="top"
+            android:gravity="center"
             android:text="Artiste"
             android:maxLines="1"
             android:ellipsize="end"
             android:layout_toLeftOf="@+id/textViewDuration"
             android:layout_toStartOf="@+id/textViewDuration"
             android:layout_marginRight="16dp"
-            android:layout_marginEnd="16dp"/>
+            android:layout_marginEnd="16dp"
+            android:textColor="@color/ColorWhite"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -63,10 +62,56 @@
                 android:layout_gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
+
         </LinearLayout>
-
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="bottom">
+        <TextView
+            android:id="@+id/textViewTitre"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:layout_below="@id/textViewTitre"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="2dp"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:text="Titre"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:layout_toLeftOf="@+id/textViewDuration"
+            android:layout_toStartOf="@+id/textViewDuration"
+            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
+            android:textColor="@color/ColorWhite"/>
+        </LinearLayout>
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/songbar"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@android:color/black"
+        android:orientation="horizontal">
 
+        <SeekBar
+            android:id="@+id/songbar_progress"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical" />
+
+        <TextView
+            android:id="@+id/songbar_time"
+            android:layout_width="81dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:gravity="center_vertical|end"
+            android:text="0:00/0:00"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
     <LinearLayout
         android:id="@+id/LinearLayout2"
         android:layout_width="match_parent"
@@ -99,32 +144,4 @@
             android:layout_weight="1"
             android:text="next" />
     </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/songbar"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:background="@color/colorPrimaryDark"
-        android:orientation="horizontal">
-
-        <SeekBar
-            android:id="@+id/songbar_progress"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:background="@color/colorPrimaryDark"
-            android:layout_weight="1"
-            android:gravity="center_vertical" />
-
-        <TextView
-            android:id="@+id/songbar_time"
-            android:layout_width="81dp"
-            android:background="@color/colorPrimaryDark"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:gravity="center_vertical|end"
-            android:text="0:00/0:00"
-            android:textColor="@color/colorText"/>
-    </LinearLayout>
-
 </LinearLayout>

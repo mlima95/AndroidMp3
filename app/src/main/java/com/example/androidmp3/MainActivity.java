@@ -29,13 +29,14 @@ import java.util.List;
 import cafe.adriel.androidaudioconverter.AndroidAudioConverter;
 import cafe.adriel.androidaudioconverter.callback.ILoadCallback;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements IMusicSelected {
 
     PlayerFragment playerFragment;
     PlaylistFragment playlistFragment;
     DownloadFragment downloadFragment;
     private Toolbar toolbar;
     private Thread getSongs;
+    private List<Music> songList;
 
     public static MainActivity getInstance() {
         return instance;
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         return songList;
     }
 
-    private List<Music> songList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +65,34 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        if (findViewById(R.id.frameLayout) != null) {
+            playlistFragment = new PlaylistFragment();
+            playlistFragment.setListener(this);
+            playerFragment = new PlayerFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.frameLayout, playlistFragment)
+                    .commit();
+        }
     }
+
+
+    public void onMusicSelected(Music music) {
+
+            if (!playerFragment.isAdded()) {
+                getSupportFragmentManager().beginTransaction()
+                        .hide(playlistFragment)
+                        .add(R.id.frameLayout, playerFragment)
+                        .commit();
+            } else {
+                getSupportFragmentManager().beginTransaction()
+                        .hide(playlistFragment)
+                        .show(playerFragment)
+                        .commit();
+            }
+
+        playerFragment.select(music);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -99,6 +126,18 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (playerFragment.isAdded() && playerFragment.isVisible()) {
+            getSupportFragmentManager().beginTransaction()
+                    .hide(playerFragment)
+                    .show(playlistFragment)
+                    .commit();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     private void getData() {
