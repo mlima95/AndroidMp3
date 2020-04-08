@@ -7,19 +7,26 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.AdaptiveIconDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
 import com.example.androidmp3.R;
 import java.io.File;
 import at.huber.youtubeExtractor.VideoMeta;
@@ -29,47 +36,45 @@ import cafe.adriel.androidaudioconverter.AndroidAudioConverter;
 import cafe.adriel.androidaudioconverter.callback.IConvertCallback;
 import cafe.adriel.androidaudioconverter.callback.ILoadCallback;
 import cafe.adriel.androidaudioconverter.model.AudioFormat;
+import android.view.LayoutInflater;
 
-public class DownloadFragment extends AppCompatActivity implements View.OnClickListener {
+public class DownloadFragment extends Fragment implements View.OnClickListener {
     private static String youtubeLink;
     private EditText EditDownload;
     private Button btnDownload;
-    private String btnText;
     private LinearLayout DownloadLayout;
     private String val;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_download);
-        AndroidAudioConverter.load(this, new ILoadCallback() {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_download, null);
+        AndroidAudioConverter.load(getContext(), new ILoadCallback() {
             @Override
             public void onSuccess() {
-                Toast.makeText((getApplicationContext()), "Library AudioConverter loaded successfully", Toast.LENGTH_LONG).show();
+                Toast.makeText((getContext()), "Library AudioConverter loaded successfully", Toast.LENGTH_LONG).show();
             }
             @Override
             public void onFailure(Exception error) {
-                Toast.makeText((getApplicationContext()), "Library failed to load", Toast.LENGTH_LONG).show();
+                Toast.makeText((getContext()), "Library failed to load", Toast.LENGTH_LONG).show();
             }
         });
-        registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
-        DownloadLayout = (LinearLayout) findViewById(R.id.LinearLayoutDownload);
-        EditDownload = (EditText) findViewById(R.id.EditDownload);
-        btnDownload = (Button) findViewById(R.id.BtnDownload);
+         getActivity().registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+        DownloadLayout = (LinearLayout) v.findViewById(R.id.LinearLayoutDownload);
+        EditDownload = (EditText) v.findViewById(R.id.EditDownload);
+        btnDownload = (Button) v.findViewById(R.id.BtnDownload);
         btnDownload.setOnClickListener(this);
-
+        return v;
     }
 
-
     private void getYoutubeDownloadUrl (String youtubeLink){
-        new YouTubeExtractor(this) {
+        new YouTubeExtractor(getContext()) {
 
             @Override
             public void onExtractionComplete(SparseArray<YtFile> ytFiles, VideoMeta vMeta) {
 
                 if (ytFiles == null) {
                     // Something went wrong we got no urls. Always check this.
-                    finish();
                     return;
                 }
                 // Iterate over itags
@@ -110,7 +115,7 @@ public class DownloadFragment extends AppCompatActivity implements View.OnClickL
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setDestinationInExternalPublicDir(Environment.DIRECTORY_MUSIC, fileName);
 
-        DownloadManager manager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager manager = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
         manager.enqueue(request);
     }
 
@@ -124,7 +129,7 @@ public class DownloadFragment extends AppCompatActivity implements View.OnClickL
                 public void onSuccess(File convertedFile) {
                     // So fast? Love it!
                     flacFile.delete();
-                    Toast.makeText((getApplicationContext()), convertedFile+" converted and dowloaded successfully", Toast.LENGTH_LONG).show();
+                    Toast.makeText((getContext()), convertedFile+" converted and dowloaded successfully", Toast.LENGTH_LONG).show();
                     String test = "un test"+ convertedFile;
                     Log.e("essaie", test);
                 }

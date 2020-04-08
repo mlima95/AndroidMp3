@@ -7,7 +7,7 @@
     android:background="@color/colorPrimary"
     android:navigationIcon="@drawable/menu_icon"
     android:theme="@style/ThemeOverlay.AppCompat.Dark"
-    app:title="AbhiAndroid"
+    app:title="Mp3"
     app:titleTextColor="#FFF">
     <!-- navigation button and title for the Toolbar-->
 </androidx.appcompat.widget.Toolbar>
