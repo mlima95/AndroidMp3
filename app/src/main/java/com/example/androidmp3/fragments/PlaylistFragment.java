@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.androidmp3.MainActivity;
 import com.example.androidmp3.R;
 import com.example.androidmp3.models.Music;
 import com.example.androidmp3.models.MusicAdapter;
@@ -32,6 +33,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         View v = inflater.inflate(R.layout.fragment_playlist, null);
         listView = (ListView) v.findViewById(R.id.playlist);
         adapter = new MusicAdapter(getContext());
+        adapter.setMusics(MainActivity.getInstance().getSongList());
         listView.setAdapter(adapter);
         registerForContextMenu(listView);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

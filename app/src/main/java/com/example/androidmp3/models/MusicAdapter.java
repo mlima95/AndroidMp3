@@ -9,16 +9,24 @@ import android.widget.TextView;
 
 import com.example.androidmp3.R;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MusicAdapter extends BaseAdapter {
 
     private Context context;
-    private ArrayList<Music> musics;
+    private List<Music> musics;
 
     public MusicAdapter(Context context) {
         this.context = context;
         this.musics = new ArrayList<Music>();
-        this.musics.add(new Music("album", "artiste", "titre", "path", 111, null));
+    }
+
+    public void addMusic(Music music) {
+        musics.add(music);
+    }
+
+    public void setMusics(List<Music> musics) {
+        this.musics = musics;
     }
 
     @Override
@@ -42,7 +50,7 @@ public class MusicAdapter extends BaseAdapter {
                 Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.item_sons, null);
         TextView textArtiste = (TextView) rowView.findViewById(R.id.textViewArtiste);
-        textArtiste.setText(musics.get(position).getArtiste());
+        textArtiste.setText(musics.get(position).getArtist());
         TextView textTitre =(TextView) rowView.findViewById(R.id.textViewTitre);
         textTitre.setText(musics.get(position).getTitre());
         TextView textDuration =(TextView) rowView.findViewById(R.id.textViewDuration);
