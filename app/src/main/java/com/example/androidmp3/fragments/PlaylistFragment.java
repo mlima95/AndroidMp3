@@ -22,6 +22,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     MusicAdapter adapter;
     IMusicSelected listener;
 
+    public void setListener(IMusicSelected listener){
+        this.listener = listener;
+    }
+
     @Override
     public void onClick(View v) {
 
