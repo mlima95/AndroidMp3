@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#3F51B5"
+    android:background="@color/colorPrimaryDark"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
@@ -14,7 +14,6 @@
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#252525">
-
+        android:background="@color/colorPrimaryDark">
     </FrameLayout>
 </LinearLayout>

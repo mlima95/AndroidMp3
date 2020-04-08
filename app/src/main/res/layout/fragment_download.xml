@@ -27,6 +27,11 @@
             android:layout_gravity="center"
             android:text="Download"
             android:textAlignment="center" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </FrameLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -43,7 +48,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"     />
-        /*android:background="" */
+            /*android:background="" */
 
 
         <SeekBar
