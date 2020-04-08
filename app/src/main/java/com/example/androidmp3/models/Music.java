@@ -3,17 +3,48 @@ package com.example.androidmp3.models;
 import android.media.Image;
 
 public class Music {
-    public Music(String album, String artiste, String titre, String path, int duration, Image cover) {
+    public Music(long id, String titre, String path, String artist, long artistId, String album, long albumId, int duration, long date) {
+        this.id = id;
         this.album = album;
-        this.artiste = artiste;
+        this.artist = artist;
+        this.artistId = artistId;
+        this.albumId = albumId;
         this.titre = titre;
         this.path = path;
         this.duration = duration;
-        this.cover = cover;
+        this.date = date;
     }
 
+    private long id;
+    private long artistId;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getArtistId() {
+        return artistId;
+    }
+
+    public void setArtistId(long artistId) {
+        this.artistId = artistId;
+    }
+
+    public long getAlbumId() {
+        return albumId;
+    }
+
+    public void setAlbumId(long albumId) {
+        this.albumId = albumId;
+    }
+
+    private long albumId;
     private String album;
-    private String artiste;
+    private String artist;
     private String titre;
 
     public String getAlbum() {
@@ -24,12 +55,12 @@ public class Music {
         this.album = album;
     }
 
-    public String getArtiste() {
-        return artiste;
+    public String getArtist() {
+        return artist;
     }
 
-    public void setArtiste(String artiste) {
-        this.artiste = artiste;
+    public void setArtist(String artist) {
+        this.artist = artist;
     }
 
     public String getTitre() {
@@ -56,15 +87,15 @@ public class Music {
         this.duration = duration;
     }
 
-    public Image getCover() {
-        return cover;
+    public long getDate() {
+        return date;
     }
 
-    public void setCover(Image cover) {
-        this.cover = cover;
+    public void setDate(Long date) {
+        this.date = date;
     }
 
     private String path;
     private int duration;
-    private Image cover;
+    private long date;
 }
