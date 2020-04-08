@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/LinearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="630dp"
+        android:background="#252525"
+        android:orientation="vertical">
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/item_sons" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/songbar"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@android:color/black"
+        android:orientation="horizontal">
+
+        <ImageSwitcher
+            android:id="@+id/songbar_play"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            /> //android:background=""
+
+        <SeekBar
+            android:id="@+id/songbar_progress"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical" />
+
+        <TextView
+            android:id="@+id/songbar_time"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:gravity="center_vertical|end"
+            android:text="0:00/0:00"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+
+</LinearLayout>
