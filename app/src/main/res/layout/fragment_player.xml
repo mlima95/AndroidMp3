@@ -27,7 +27,7 @@
             android:layout_toStartOf="@+id/textViewDuration"
             android:layout_marginRight="16dp"
             android:layout_marginEnd="16dp"
-            android:textColor="@color/ColorWhite"/>
+            />
 
         <TextView
             android:id="@+id/textViewArtiste"
@@ -47,7 +47,7 @@
             android:layout_toStartOf="@+id/textViewDuration"
             android:layout_marginRight="16dp"
             android:layout_marginEnd="16dp"
-            android:textColor="@color/ColorWhite"/>
+            />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -85,7 +85,7 @@
             android:layout_toStartOf="@+id/textViewDuration"
             android:layout_marginRight="16dp"
             android:layout_marginEnd="16dp"
-            android:textColor="@color/ColorWhite"/>
+            />
         </LinearLayout>
     </LinearLayout>
     <LinearLayout
