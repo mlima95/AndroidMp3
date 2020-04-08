@@ -9,8 +9,8 @@
     <LinearLayout
         android:id="@+id/LinearLayout2"
         android:layout_width="match_parent"
-        android:layout_height="630dp"
-        android:background="#252525"
+        android:layout_height="685dp"
+        android:background="@color/colorPrimaryDark"
         android:orientation="vertical">
 
         <ListView

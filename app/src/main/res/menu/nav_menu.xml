@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <group android:checkableBehavior="none">
         <!--
+
                 Add menu items here
                 Menu items with icon and Title
         -->
@@ -10,15 +11,18 @@
             android:id="@+id/first"
             android:icon="@mipmap/ic_launcher"
             android:title="Téléchargement"
+            android:textColor="@color/colorText"
             app:showAsAction="never"/>
         <item
             android:id="@+id/second"
+            android:textColor="@color/colorText"
             android:icon="@mipmap/ic_launcher"
             android:title="Player"
             app:showAsAction="never"/>
         <item
             android:id="@+id/third"
             android:icon="@mipmap/ic_launcher"
+            android:textColor="@color/colorText"
             android:title="Playlist"
             app:showAsAction="never"/>
     </group>
