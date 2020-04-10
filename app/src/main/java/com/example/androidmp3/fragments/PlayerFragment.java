@@ -43,6 +43,11 @@ public class PlayerFragment extends Fragment implements View.OnClickListener {
     Thread thread;
     MusicAdapter adapter;
     Runnable runnable;
+
+    public MediaPlayer getPlayer() {
+        return player;
+    }
+
     MediaPlayer player = new MediaPlayer();
     IMusicSelected listener;
     Boolean isLaunch=true;
@@ -74,6 +79,7 @@ public class PlayerFragment extends Fragment implements View.OnClickListener {
         return v;
     }
 
+
     private void play() {
         player.reset();
         try {
@@ -89,7 +95,7 @@ public class PlayerFragment extends Fragment implements View.OnClickListener {
                 runnable = new Runnable() {
                     @Override
                     public void run () {
-                        int CurrentPosition = player.getCurrentPosition();
+                        int CurrentPosition = player.getCurrentPosition() + 1000;
                         int songDuration = currentMusic.getDuration();
                         seekBar.setMax(songDuration);
                         seekBar.setProgress(CurrentPosition);
@@ -107,7 +113,9 @@ public class PlayerFragment extends Fragment implements View.OnClickListener {
 
                         String totalSongTime = songPositionTime + "/" + songDurationTime;
                         duration.setText(totalSongTime);
-
+                        if (songPositionTime.equals(songDurationTime)) {
+                            next.performClick();
+                        }
                         handler.postDelayed(this, 1000);
 
 

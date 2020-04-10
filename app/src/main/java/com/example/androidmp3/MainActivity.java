@@ -1,7 +1,9 @@
 package com.example.androidmp3;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,7 +27,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements IMusicSelected {
+public class MainActivity extends AppCompatActivity implements IMusicSelected, AudioManager.OnAudioFocusChangeListener {
 
     PlayerFragment playerFragment;
     PlaylistFragment playlistFragment;
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements IMusicSelected {
 
     Music musicSelected = null;
     DownloadFragment downloadFragment;
+    private AudioManager mAudioManager;
     private Toolbar toolbar;
     private List<Music> songList;
 
@@ -67,6 +70,8 @@ public class MainActivity extends AppCompatActivity implements IMusicSelected {
                     1);
         }
         instance = this;
+        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        mAudioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
         getData(0);
         setContentView(R.layout.activity_main);
         toolbar = findViewById(R.id.toolbar);
@@ -81,6 +86,11 @@ public class MainActivity extends AppCompatActivity implements IMusicSelected {
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mAudioManager.abandonAudioFocus(this);
+    }
 
     public void onMusicSelected(Music music) {
         musicSelected = music;
@@ -161,6 +171,15 @@ public class MainActivity extends AppCompatActivity implements IMusicSelected {
                     .commit();
         } else {
             super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onAudioFocusChange(int focusChange) {
+        if (focusChange <= 0) {
+            playerFragment.getPlayer().pause();
+        } else {
+            playerFragment.getPlayer().start();
         }
     }
 
