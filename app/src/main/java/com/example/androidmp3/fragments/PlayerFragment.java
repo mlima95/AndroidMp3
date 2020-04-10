@@ -1,29 +1,42 @@
 package com.example.androidmp3.fragments;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.PorterDuff;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.provider.SyncStateContract;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
+import com.example.androidmp3.MainActivity;
 import com.example.androidmp3.R;
 import com.example.androidmp3.models.Music;
+import com.example.androidmp3.models.MusicAdapter;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class PlayerFragment extends Fragment implements View.OnClickListener {
 
     Fragment infoMusic;
-    Button previous;
-    Button play;
-    Button next;
+    ImageButton previous;
+    ImageButton play;
+    ImageButton next;
     Music currentMusic;
     SeekBar seekBar;
     TextView textViewAlbum;
@@ -31,45 +44,117 @@ public class PlayerFragment extends Fragment implements View.OnClickListener {
     TextView textViewTitre;
     ImageView imageView;
     TextView duration;
+    MusicAdapter adapter;
     MediaPlayer player = new MediaPlayer();
     IMusicSelected listener;
+    Boolean isLaunch=true;
+    private long currentId;
+    private long newId;
+    private List<Music> songList= MainActivity.getInstance().getSongList();
+    Handler handler = new Handler();
 
 
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_player, container, false);
-        previous = (Button) v.findViewById(R.id.buttonPrevious);
-        play = (Button) v.findViewById(R.id.buttonPlay);
-        next = (Button) v.findViewById(R.id.buttonNext);
+        previous = (ImageButton) v.findViewById(R.id.buttonPrevious);
+        play = (ImageButton) v.findViewById(R.id.buttonPlay);
+        next = (ImageButton) v.findViewById(R.id.buttonNext);
         textViewAlbum=(TextView) v.findViewById(R.id.textViewAlbum);
         textViewArtiste=(TextView) v.findViewById(R.id.textViewArtiste);
         textViewTitre=(TextView) v.findViewById(R.id.textViewTitre);
-        duration=(TextView) v.findViewById(R.id.textViewDuration);
+        duration=(TextView) v.findViewById(R.id.songbar_time);
         imageView=(ImageView) v.findViewById(R.id.song_cover);
+        seekBar = (SeekBar) v.findViewById(R.id.songbar_progress);
+        play.setImageResource(android.R.drawable.ic_media_pause);
+//        seekBar.getProgressDrawable().setColorFilter(getResources().getColor(R.color.colorText), PorterDuff.Mode.SRC_IN);
+//        seekBar.getThumb().setColorFilter(getResources().getColor(R.color.colorText), PorterDuff.Mode.SRC_IN);
         previous.setOnClickListener(this);
         play.setOnClickListener(this);
         next.setOnClickListener(this);
+       // togglePlay(player);
+        player.reset();
+        try {
+            player.setDataSource(getContext(), Uri.parse(currentMusic.getPath()));
+            player.prepare();
+            player.start();
+            handlerSeekbar();
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    int CurrentPosition = player.getCurrentPosition();
+                    int songDuration = currentMusic.getDuration();
+                    seekBar.setMax(songDuration);
+                    seekBar.setProgress(CurrentPosition);
+                    String songPositionTime = String.format(
+                            Locale.US, "%02d:%02d",
+                            TimeUnit.MILLISECONDS.toMinutes(CurrentPosition),
+                            TimeUnit.MILLISECONDS.toSeconds(CurrentPosition) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(CurrentPosition))
+                    );
 
+                    String songDurationTime = String.format(
+                            Locale.US, "%02d:%02d",
+                            TimeUnit.MILLISECONDS.toMinutes(songDuration),
+                            TimeUnit.MILLISECONDS.toSeconds(songDuration) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(songDuration))
+                    );
+
+                    String totalSongTime = songPositionTime + "/" + songDurationTime;
+                    duration.setText(totalSongTime);
+                    // int songDuration = currentMusic.getDuration();
+                    //duration.setText(convertDuration(player.getCurrentPosition()));
+                    handler.postDelayed(this,1000);
+
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        refresh();
         return v;
     }
 
+    private void handlerSeekbar(){
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if(player != null){
+                   // player.seekTo(progress * 1000);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+    }
 
     @Override
     public void onClick(View v) {
         if(v.equals(play) && !player.isPlaying()){
-            try{
-                player.reset();
-                player.setDataSource(getContext(), Uri.parse(currentMusic.getPath()));
-                player.prepare();
+                play.setImageResource(android.R.drawable.ic_media_pause);
                 player.start();
-            }catch (IOException e) {
-                e.printStackTrace();
-            }
+              //  currentId=currentMusic.getId();
         } else {
-            player.stop();
+            play.setImageResource(android.R.drawable.ic_media_play);
+            player.pause();
         }
     }
+
+//    public int getSongPosition(){
+//        if(player == null){
+//            Log.e("Error","MediaPlayer is null !!");
+//            return -1;
+//        }else{
+//            return player.getCurrentPosition();
+//        }
+//    }
 
     public void select(Music m) {
         currentMusic = m;
@@ -78,12 +163,67 @@ public class PlayerFragment extends Fragment implements View.OnClickListener {
         };
     }
 
+
+//    private void togglePlay(MediaPlayer mp){
+//
+//        if(mp.isPlaying()){
+//            mp.stop();
+//            mp.reset();
+//        }else{
+//            mp.start();
+//            play.setImageResource(android.R.drawable.ic_media_pause);
+//        }
+//
+//    }
+
+
     public void refresh() {
-       textViewAlbum.setText(currentMusic.getAlbum());
+        textViewAlbum.setText(currentMusic.getAlbum());
         textViewTitre.setText(currentMusic.getTitre());
         textViewArtiste.setText(currentMusic.getArtist());
+        getAlbum(currentMusic.getPath());
+//        newId=currentMusic.getId();
+//        if(newId != currentId){
+//            play.setImageResource(android.R.drawable.ic_media_pause);
+//            player.stop();
+//        }
+       // prepareSong(currentMusic);
     }
 
+//    private void prepareSong(Music m) {
+//        player.reset();
+//        try {
+//            player.setDataSource(getContext(), Uri.parse(currentMusic.getPath()));
+//            player.prepare();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
+//    private void changeSelectedSong(long index){
+//        adapter.getSelectedPosition();
+//        adapter.notifyDataSetChanged();
+//        currentId = index;
+//        adapter.setSelectedPosition(currentId);
+//        adapter.notifyDataSetChanged();
+//    }
+
+
+        public void getAlbum(String path){
+        android.media.MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+        mmr.setDataSource(path);
+
+        byte [] data = mmr.getEmbeddedPicture();
+
+        if(data != null)
+        {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+            imageView.setImageBitmap(bitmap);
+        }
+        else
+        {
+            imageView.setImageResource(R.drawable.channels4_profile);
+        }
+    }
 
 }
