@@ -24,5 +24,21 @@
             android:textColor="@color/colorText"
             android:title="Playlist"
             app:showAsAction="never"/>
+        <item
+            android:id="@+id/sort"
+            android:title="Trier"
+            app:showAsAction="never">
+            <menu>
+                <item
+                    android:id="@+id/a_to_z"
+                    android:title="A -> Z"/>
+                <item
+                    android:id="@+id/z_to_a"
+                    android:title="Z -> A"/>
+                <item
+                    android:id="@+id/dateAdded"
+                    android:title="Date d'ajout"/>
+            </menu>
+        </item>
     </group>
 </menu>

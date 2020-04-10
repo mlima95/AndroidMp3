@@ -126,7 +126,7 @@
             android:textColor="@color/colorText"
             android:text="previous" />
 
-        <Button
+        <ImageButton
             android:id="@+id/buttonPlay"
             android:layout_width="wrap_content"
             android:layout_height="109dp"

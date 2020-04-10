@@ -10,7 +10,7 @@
     <LinearLayout
         android:id="@+id/LinearLayoutDownload"
         android:layout_width="match_parent"
-        android:layout_height="684dp"
+        android:layout_height="667dp"
         android:background="#252525"
         android:orientation="vertical">
 
@@ -47,8 +47,8 @@
             android:layout_height="32dp"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"     />
-            /*android:background="" */
+            android:layout_marginLeft="16dp"
+            />
 
 
         <SeekBar

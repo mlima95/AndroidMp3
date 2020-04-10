@@ -9,21 +9,52 @@
     <LinearLayout
         android:id="@+id/LinearLayout2"
         android:layout_width="match_parent"
-        android:layout_height="685dp"
+        android:layout_height="667dp"
         android:background="@color/colorPrimaryDark"
         android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/editTextSearch"
+                android:layout_width="324dp"
+                android:layout_height="55dp"
+                android:background="@color/colorPrimaryDark"
+                android:ems="10"
+                android:hint="Search"
+                android:inputType="textPersonName"
+                android:paddingStart="10dp"
+                android:textAlignment="viewStart"
+                android:textColor="@color/colorText"
+                android:textColorHint="@color/colorText" />
+
+            <Button
+                android:id="@+id/buttonSearch"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:background="@color/colorPrimaryDark"
+
+                android:text="Search"
+                android:textColor="@color/colorText" />
+        </LinearLayout>
 
         <ListView
             android:id="@+id/playlist"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:listitem="@layout/item_sons" />
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/item_sons">
+
+        </ListView>
+
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/songbar"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:background="@android:color/black"
         android:orientation="horizontal">
 
@@ -34,7 +65,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
-            /> //android:background=""
+            />
 
         <SeekBar
             android:id="@+id/songbar_progress"

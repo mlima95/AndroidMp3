@@ -5,22 +5,31 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.androidmp3.MainActivity;
 import com.example.androidmp3.R;
+import com.example.androidmp3.dataloader.SongLoader;
 import com.example.androidmp3.models.Music;
 import com.example.androidmp3.models.MusicAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
     ListView listView;
     MusicAdapter adapter;
     IMusicSelected listener;
+    SearchView searchView;
+    EditText editSearch;
+    Button buttonSearch;
 
     public void setListener(IMusicSelected listener){
         this.listener = listener;
@@ -28,7 +37,22 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-
+        if (v == buttonSearch) {
+            SongLoader.getSongList(getContext());
+            String search = editSearch.getText().toString().toLowerCase();
+            if (!("".equals(search))) {
+                List<Music> musics = new ArrayList<Music>(SongLoader.songList);
+                SongLoader.songList.clear();
+                for (Music music : musics) {
+                    if (music.getTitre().toLowerCase().contains(search) ||
+                            music.getAlbum().toLowerCase().contains(search) ||
+                            music.getArtist().toLowerCase().contains(search)) {
+                        SongLoader.songList.add(music);
+                    }
+                }
+            }
+            initList();
+        }
     }
 
     @Nullable
@@ -36,8 +60,16 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_playlist, null);
         listView = (ListView) v.findViewById(R.id.playlist);
+        editSearch = (EditText) v.findViewById(R.id.editTextSearch);
+        buttonSearch = (Button) v.findViewById(R.id.buttonSearch);
+        buttonSearch.setOnClickListener(this);
+        initList();
+        return v;
+    }
+
+    public void initList() {
         adapter = new MusicAdapter(getContext());
-        adapter.setMusics(MainActivity.getInstance().getSongList());
+        adapter.setMusics(SongLoader.songList);
         listView.setAdapter(adapter);
         registerForContextMenu(listView);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -47,6 +79,5 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
                 listener.onMusicSelected(music);
             }
         });
-        return v;
     }
 }

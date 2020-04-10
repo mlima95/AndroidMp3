@@ -1,41 +1,37 @@
 package com.example.androidmp3;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
-
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.androidmp3.dataloader.SongLoader;
 import com.example.androidmp3.fragments.DownloadFragment;
-
 import com.example.androidmp3.fragments.IMusicSelected;
 import com.example.androidmp3.fragments.PlayerFragment;
 import com.example.androidmp3.fragments.PlaylistFragment;
 import com.example.androidmp3.models.Music;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-
-import cafe.adriel.androidaudioconverter.AndroidAudioConverter;
-import cafe.adriel.androidaudioconverter.callback.ILoadCallback;
 
 public class MainActivity extends AppCompatActivity implements IMusicSelected {
 
     PlayerFragment playerFragment;
     PlaylistFragment playlistFragment;
+    SearchView searchView;
     DownloadFragment downloadFragment;
     private Toolbar toolbar;
-    private Thread getSongs;
     private List<Music> songList;
 
     public static MainActivity getInstance() {
@@ -61,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements IMusicSelected {
                     1);
         }
         instance = this;
-        getData();
+        getData(0);
         setContentView(R.layout.activity_main);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -98,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements IMusicSelected {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.nav_menu, menu);
+
         return true;
     }
 
@@ -107,21 +104,36 @@ public class MainActivity extends AppCompatActivity implements IMusicSelected {
             case R.id.first:
                 if (findViewById(R.id.frameLayout) != null) {
                     downloadFragment = new DownloadFragment();
+                    toolbar.getMenu().findItem(R.id.sort).setVisible(false);
                     getSupportFragmentManager().beginTransaction().add(R.id.frameLayout, downloadFragment).commit();
                 }
                 break;
             case R.id.second:
                 if (findViewById(R.id.frameLayout) != null) {
                     playerFragment = new PlayerFragment();
+                    toolbar.getMenu().findItem(R.id.sort).setVisible(false);
                     getSupportFragmentManager().beginTransaction().add(R.id.frameLayout, playerFragment).commit();
                 }
                 break;
             case R.id.third:
                 if (findViewById(R.id.frameLayout) != null) {
-                    getData();
+                    getData(0);
                     playlistFragment = new PlaylistFragment();
+                    toolbar.getMenu().findItem(R.id.sort).setVisible(true);
                     getSupportFragmentManager().beginTransaction().add(R.id.frameLayout, playlistFragment).commit();
                 }
+                break;
+            case R.id.a_to_z:
+                Collections.sort(SongLoader.songList, new AlphabeticalComparator());
+                playlistFragment.initList();
+                break;
+            case R.id.z_to_a:
+                Collections.sort(SongLoader.songList, new ReverseAlphabeticalComparator());
+                playlistFragment.initList();
+                break;
+            case R.id.dateAdded:
+                Collections.sort(SongLoader.songList, new DateComparator());
+                playlistFragment.initList();
                 break;
         }
 
@@ -140,7 +152,29 @@ public class MainActivity extends AppCompatActivity implements IMusicSelected {
         }
     }
 
-    private void getData() {
+    private class AlphabeticalComparator implements Comparator<Music> {
+        @Override
+        public int compare(Music music1, Music music2) {
+            return music1.getTitre().toLowerCase().compareTo(music2.getTitre().toLowerCase());
+        }
+    }
+
+    private class ReverseAlphabeticalComparator implements Comparator<Music> {
+        @Override
+        public int compare(Music music1, Music music2) {
+            return music2.getTitre().toLowerCase().compareTo(music1.getTitre().toLowerCase());
+        }
+    }
+
+    private class DateComparator implements Comparator<Music> {
+        @Override
+        public int compare(Music music1, Music music2) {
+            long result = music1.getDate() - music2.getDate();
+            return (int) result;
+        }
+    }
+
+    private void getData(int option) {
         songList = SongLoader.getSongList(this);
     }
 }
