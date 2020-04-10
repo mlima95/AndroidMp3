@@ -30,6 +30,16 @@ public class MainActivity extends AppCompatActivity implements IMusicSelected {
     PlayerFragment playerFragment;
     PlaylistFragment playlistFragment;
     SearchView searchView;
+
+    public Music getMusicSelected() {
+        return musicSelected;
+    }
+
+    public void setMusicSelected(Music musicSelected) {
+        this.musicSelected = musicSelected;
+    }
+
+    Music musicSelected = null;
     DownloadFragment downloadFragment;
     private Toolbar toolbar;
     private List<Music> songList;
@@ -73,8 +83,10 @@ public class MainActivity extends AppCompatActivity implements IMusicSelected {
 
 
     public void onMusicSelected(Music music) {
+        musicSelected = music;
+        toolbar.getMenu().findItem(R.id.sort).setVisible(false);
+        if (!playerFragment.isAdded()) {
 
-            if (!playerFragment.isAdded()) {
                 getSupportFragmentManager().beginTransaction()
                         .hide(playlistFragment)
                         .add(R.id.frameLayout, playerFragment)

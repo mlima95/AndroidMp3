@@ -2,24 +2,17 @@ package com.example.androidmp3.fragments;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.PorterDuff;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-
-import android.provider.SyncStateContract;
-import android.util.Log;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
-import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -30,8 +23,6 @@ import com.example.androidmp3.models.Music;
 import com.example.androidmp3.models.MusicAdapter;
 
 import java.io.IOException;
-import java.util.Locale;
-import java.util.Timer;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -42,7 +33,6 @@ public class PlayerFragment extends Fragment implements View.OnClickListener {
     ImageButton previous;
     ImageButton play;
     ImageButton next;
-    Music currentMusic;
     SeekBar seekBar;
     TextView textViewAlbum;
     TextView textViewArtiste;
@@ -74,8 +64,8 @@ public class PlayerFragment extends Fragment implements View.OnClickListener {
         imageView=(ImageView) v.findViewById(R.id.song_cover);
         seekBar = (SeekBar) v.findViewById(R.id.songbar_progress);
         play.setImageResource(android.R.drawable.ic_media_pause);
-//        seekBar.getProgressDrawable().setColorFilter(getResources().getColor(R.color.colorText), PorterDuff.Mode.SRC_IN);
-//        seekBar.getThumb().setColorFilter(getResources().getColor(R.color.colorText), PorterDuff.Mode.SRC_IN);
+//      seekBar.getProgressDrawable().setColorFilter(getResources().getColor(R.color.colorText), PorterDuff.Mode.SRC_IN);
+//      seekBar.getThumb().setColorFilter(getResources().getColor(R.color.colorText), PorterDuff.Mode.SRC_IN);
         previous.setOnClickListener(this);
         play.setOnClickListener(this);
         next.setOnClickListener(this);
@@ -83,38 +73,41 @@ public class PlayerFragment extends Fragment implements View.OnClickListener {
 
         player.reset();
         try {
-            player.setDataSource(getContext(), Uri.parse(currentMusic.getPath()));
-            player.prepare();
-            player.start();
-            handlerSeekbar();
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    int CurrentPosition = player.getCurrentPosition();
-                    int songDuration = currentMusic.getDuration();
-                    seekBar.setMax(songDuration);
-                    seekBar.setProgress(CurrentPosition);
-                    String songPositionTime = String.format(
-                            Locale.US, "%02d:%02d",
-                            TimeUnit.MILLISECONDS.toMinutes(CurrentPosition),
-                            TimeUnit.MILLISECONDS.toSeconds(CurrentPosition) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(CurrentPosition))
-                    );
+            final Music currentMusic = MainActivity.getInstance().getMusicSelected();
+            if (currentMusic != null) {
+                player.setDataSource(getContext(), Uri.parse(currentMusic.getPath()));
+                player.prepare();
+                player.start();
+                handlerSeekbar();
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        int CurrentPosition = player.getCurrentPosition();
+                        int songDuration = currentMusic.getDuration();
+                        seekBar.setMax(songDuration);
+                        seekBar.setProgress(CurrentPosition);
+                        String songPositionTime = String.format(
+                                Locale.US, "%02d:%02d",
+                                TimeUnit.MILLISECONDS.toMinutes(CurrentPosition),
+                                TimeUnit.MILLISECONDS.toSeconds(CurrentPosition) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(CurrentPosition))
+                        );
 
-                    String songDurationTime = String.format(
-                            Locale.US, "%02d:%02d",
-                            TimeUnit.MILLISECONDS.toMinutes(songDuration),
-                            TimeUnit.MILLISECONDS.toSeconds(songDuration) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(songDuration))
-                    );
+                        String songDurationTime = String.format(
+                                Locale.US, "%02d:%02d",
+                                TimeUnit.MILLISECONDS.toMinutes(songDuration),
+                                TimeUnit.MILLISECONDS.toSeconds(songDuration) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(songDuration))
+                        );
 
-                    String totalSongTime = songPositionTime + "/" + songDurationTime;
-                    duration.setText(totalSongTime);
-                    // int songDuration = currentMusic.getDuration();
+                        String totalSongTime = songPositionTime + "/" + songDurationTime;
+                        duration.setText(totalSongTime);
+                        // int songDuration = currentMusic.getDuration();
 
-                    //duration.setText(convertDuration(player.getCurrentPosition()));
-                    handler.postDelayed(this,1000);
+                        //duration.setText(convertDuration(player.getCurrentPosition()));
+                        handler.postDelayed(this, 1000);
 
-                }
-            });
+                    }
+                });
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -166,7 +159,6 @@ public class PlayerFragment extends Fragment implements View.OnClickListener {
 //    }
 
     public void select(Music m) {
-        currentMusic = m;
         if (textViewAlbum != null) {
             refresh();
         };
@@ -187,6 +179,8 @@ public class PlayerFragment extends Fragment implements View.OnClickListener {
 
 
     public void refresh() {
+        Music currentMusic = MainActivity.getInstance().getMusicSelected();
+        if (currentMusic == null) return;
         textViewAlbum.setText(currentMusic.getAlbum());
         textViewTitre.setText(currentMusic.getTitre());
         textViewArtiste.setText(currentMusic.getArtist());

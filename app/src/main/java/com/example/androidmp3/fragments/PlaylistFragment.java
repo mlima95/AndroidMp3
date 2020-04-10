@@ -76,7 +76,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Music music = (Music) parent.getItemAtPosition(position);
-                listener.onMusicSelected(music);
+                if (music != null) listener.onMusicSelected(music);
             }
         });
     }
