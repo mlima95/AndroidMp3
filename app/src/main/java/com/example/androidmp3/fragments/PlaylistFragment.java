@@ -41,15 +41,15 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
             SongLoader.getSongList(getContext());
             String search = editSearch.getText().toString().toLowerCase();
             if (!("".equals(search))) {
-                List<Music> musics = new ArrayList<Music>(SongLoader.songList);
-                SongLoader.songList.clear();
-                for (Music music : musics) {
+                List<Music> musics = new ArrayList<Music>();
+                for (Music music : SongLoader.songList) {
                     if (music.getTitre().toLowerCase().contains(search) ||
                             music.getAlbum().toLowerCase().contains(search) ||
                             music.getArtist().toLowerCase().contains(search)) {
-                        SongLoader.songList.add(music);
+                        musics.add(music);
                     }
                 }
+                SongLoader.songList = musics;
             }
             initList();
         }
@@ -63,6 +63,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener {
         editSearch = (EditText) v.findViewById(R.id.editTextSearch);
         buttonSearch = (Button) v.findViewById(R.id.buttonSearch);
         buttonSearch.setOnClickListener(this);
+        listener = (IMusicSelected) getActivity();
         initList();
         return v;
     }

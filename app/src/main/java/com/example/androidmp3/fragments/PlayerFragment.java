@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.androidmp3.MainActivity;
 import com.example.androidmp3.R;
+import com.example.androidmp3.dataloader.SongLoader;
 import com.example.androidmp3.models.Music;
 import com.example.androidmp3.models.MusicAdapter;
 
@@ -39,7 +40,9 @@ public class PlayerFragment extends Fragment implements View.OnClickListener {
     TextView textViewTitre;
     ImageView imageView;
     TextView duration;
+    Thread thread;
     MusicAdapter adapter;
+    Runnable runnable;
     MediaPlayer player = new MediaPlayer();
     IMusicSelected listener;
     Boolean isLaunch=true;
@@ -64,13 +67,14 @@ public class PlayerFragment extends Fragment implements View.OnClickListener {
         imageView=(ImageView) v.findViewById(R.id.song_cover);
         seekBar = (SeekBar) v.findViewById(R.id.songbar_progress);
         play.setImageResource(android.R.drawable.ic_media_pause);
-//      seekBar.getProgressDrawable().setColorFilter(getResources().getColor(R.color.colorText), PorterDuff.Mode.SRC_IN);
-//      seekBar.getThumb().setColorFilter(getResources().getColor(R.color.colorText), PorterDuff.Mode.SRC_IN);
         previous.setOnClickListener(this);
         play.setOnClickListener(this);
         next.setOnClickListener(this);
-       // togglePlay(player);
+        play();
+        return v;
+    }
 
+    private void play() {
         player.reset();
         try {
             final Music currentMusic = MainActivity.getInstance().getMusicSelected();
@@ -78,10 +82,13 @@ public class PlayerFragment extends Fragment implements View.OnClickListener {
                 player.setDataSource(getContext(), Uri.parse(currentMusic.getPath()));
                 player.prepare();
                 player.start();
-                handlerSeekbar();
-                getActivity().runOnUiThread(new Runnable() {
+                play.setImageResource(android.R.drawable.ic_media_pause);
+                if (runnable != null) {
+                    handler.removeCallbacks(runnable);
+                }
+                runnable = new Runnable() {
                     @Override
-                    public void run() {
+                    public void run () {
                         int CurrentPosition = player.getCurrentPosition();
                         int songDuration = currentMusic.getDuration();
                         seekBar.setMax(songDuration);
@@ -100,83 +107,64 @@ public class PlayerFragment extends Fragment implements View.OnClickListener {
 
                         String totalSongTime = songPositionTime + "/" + songDurationTime;
                         duration.setText(totalSongTime);
-                        // int songDuration = currentMusic.getDuration();
 
-                        //duration.setText(convertDuration(player.getCurrentPosition()));
                         handler.postDelayed(this, 1000);
 
+
                     }
-                });
+
+
+                };
+                getActivity().runOnUiThread(runnable);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
         refresh();
-        return v;
-    }
-
-    private void handlerSeekbar(){
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if(player != null){
-                   // player.seekTo(progress * 1000);
-
-                }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
     }
 
     @Override
     public void onClick(View v) {
-        if(v.equals(play) && !player.isPlaying()){
+        if(v.equals(play)){
+            if (!player.isPlaying()) {
                 play.setImageResource(android.R.drawable.ic_media_pause);
                 player.start();
-              //  currentId=currentMusic.getId();
-        } else {
-            play.setImageResource(android.R.drawable.ic_media_play);
-            player.pause();
+            } else {
+                play.setImageResource(android.R.drawable.ic_media_play);
+                player.pause();
+            }
+        } else if (v.equals(next)){
+            Music currentMusic = MainActivity.getInstance().getMusicSelected();
+            Music trueMusic = SongLoader.findSongById(currentMusic.getId());
+            int position = SongLoader.songList.indexOf(trueMusic);
+
+            if (songList.size() > position + 1) {
+                MainActivity.getInstance().setMusicSelected(SongLoader.songList.get(position + 1));
+            } else {
+                MainActivity.getInstance().setMusicSelected(SongLoader.songList.get(0));
+            }
+            play();
+        } else if (v.equals(previous)){
+            Music currentMusic = MainActivity.getInstance().getMusicSelected();
+            Music trueMusic = SongLoader.findSongById(currentMusic.getId());
+            int position = SongLoader.songList.indexOf(trueMusic);
+
+            if (position > 0) {
+                MainActivity.getInstance().setMusicSelected(SongLoader.songList.get(position - 1));
+            } else {
+                MainActivity.getInstance().setMusicSelected(SongLoader.songList.get(SongLoader.songList.size() - 1));
+            }
+            play();
         }
     }
 
-//    public int getSongPosition(){
-//        if(player == null){
-//            Log.e("Error","MediaPlayer is null !!");
-//            return -1;
-//        }else{
-//            return player.getCurrentPosition();
-//        }
-//    }
+
 
     public void select(Music m) {
         if (textViewAlbum != null) {
-            refresh();
-        };
+            play();
+        }
     }
-
-
-//    private void togglePlay(MediaPlayer mp){
-//
-//        if(mp.isPlaying()){
-//            mp.stop();
-//            mp.reset();
-//        }else{
-//            mp.start();
-//            play.setImageResource(android.R.drawable.ic_media_pause);
-//        }
-//
-//    }
-
 
     public void refresh() {
         Music currentMusic = MainActivity.getInstance().getMusicSelected();
@@ -185,12 +173,6 @@ public class PlayerFragment extends Fragment implements View.OnClickListener {
         textViewTitre.setText(currentMusic.getTitre());
         textViewArtiste.setText(currentMusic.getArtist());
         getAlbum(currentMusic.getPath());
-//        newId=currentMusic.getId();
-//        if(newId != currentId){
-//            play.setImageResource(android.R.drawable.ic_media_pause);
-//            player.stop();
-//        }
-       // prepareSong(currentMusic);
     }
     public static String convertDuration(long duration){
         long minutes = (duration/1000) / 60;
@@ -199,24 +181,6 @@ public class PlayerFragment extends Fragment implements View.OnClickListener {
         String converted = String.format("%d:%02d",minutes,seconds);
         return converted;
     }
-
-//    private void prepareSong(Music m) {
-//        player.reset();
-//        try {
-//            player.setDataSource(getContext(), Uri.parse(currentMusic.getPath()));
-//            player.prepare();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
-//    private void changeSelectedSong(long index){
-//        adapter.getSelectedPosition();
-//        adapter.notifyDataSetChanged();
-//        currentId = index;
-//        adapter.setSelectedPosition(currentId);
-//        adapter.notifyDataSetChanged();
-//    }
 
 
         public void getAlbum(String path){
